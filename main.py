@@ -15,15 +15,14 @@ import sys
 import logging
 import csv
 
-from PyQt5.QtWidgets import (QMainWindow, QTextEdit,
-    QAction, QFileDialog, QApplication, QTableWidget,QTableWidgetItem)
-from PyQt5.QtGui import QIcon
+from PyQt5 import QtWidgets
+
 
 sniffer = csv.Sniffer()
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
-class DataTable(QTableWidget):
+class DataTable(QtWidgets.QTableWidget):
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -66,15 +65,14 @@ class DataTable(QTableWidget):
             event.ignore()
 
     def setTableData(self, dataList):
-
         self.setRowCount(len(dataList))
         self.setColumnCount(len(dataList[0]))
         for x, row in enumerate(dataList):
             for y, text in enumerate(row):
-                self.setItem(x, y, QTableWidgetItem(text))
+                self.setItem(x, y, QtWidgets.QTableWidgetItem(text))
 
 
-class Example(QMainWindow):
+class Example(QtWidgets.QMainWindow):
 
     def __init__(self):
         super().__init__()
@@ -87,12 +85,12 @@ class Example(QMainWindow):
         self.setCentralWidget(self.dataTable)
         self.statusBar()
 
-        openFile = QAction('&Open File', self)
+        openFile = QtWidgets.QAction('&Open File', self)
         openFile.setShortcut('Ctrl+O')
         openFile.setStatusTip('Open new File')
         openFile.triggered.connect(self.showDialog)
 
-        saveFile = QAction("&Save File", self)
+        saveFile = QtWidgets.QAction("&Save File", self)
         saveFile.setShortcut("Ctrl+S")
         saveFile.setStatusTip('Save File')
         saveFile.triggered.connect(self.fileSave)
@@ -107,7 +105,8 @@ class Example(QMainWindow):
         self.show()
 
     def fileSave(self):
-        name = QFileDialog.getSaveFileName(self, "Datei als CSV mit Semikolon speichern",'/home', 'CSV Files (*.csv)')
+        name = QtWidgets.QFileDialog.getSaveFileName(self, "Datei als CSV mit Semikolon speichern",
+                                                     '/home', 'CSV Files (*.csv)')
         if name[0]:
             try:
                 with open(name[0],"w") as w_csv_file:
@@ -124,7 +123,7 @@ class Example(QMainWindow):
 
     def showDialog(self):
 
-        fname = QFileDialog.getOpenFileName(self, 'Datei öffnen', '/home', 'TSV and CSV Files (*.tsv *.csv)')
+        fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Datei öffnen', '/home', 'TSV and CSV Files (*.tsv *.csv)')
         if fname[0]:
             with open(fname[0], 'r') as f:
                 # delimiterT = "\t" if fname[1] == "TSV File (*.tsv)" else ","
@@ -140,6 +139,6 @@ class Example(QMainWindow):
 
 if __name__ == '__main__':
 
-    app = QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     ex = Example()
     sys.exit(app.exec_())

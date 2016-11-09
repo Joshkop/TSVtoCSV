@@ -14,6 +14,7 @@ last edited: November 2016
 import sys
 import logging
 import csv
+import os
 
 from PyQt5 import QtWidgets
 
@@ -39,7 +40,8 @@ class DataTable(QtWidgets.QTableWidget):
             e.ignore()
 
     def dropEvent(self, e):
-        if e.mimeData().hasUrls and e.mimeData().urls()[0]:
+        p = e.mimeData().urls()
+        if e.mimeData().hasUrls and os.path.splitext(e.mimeData().urls()[0].toLocalFile())[1] in [".csv", ".tsv"]:
             try:
                 urlT = e.mimeData().urls()
                 logging.debug("Dropped File: %s", urlT)
@@ -51,6 +53,7 @@ class DataTable(QtWidgets.QTableWidget):
                     dataList = list(csv.reader(fname, delimiter=delimiterT.delimiter))
                     self.setTableData(dataList)
                     self.parent.setWindowTitle("TSV to CSV Converter - %s" % urlT[0].toLocalFile())
+                    self.parent.fileURL = urlT[0].toLocalFile()
             except UnicodeDecodeError as e:
                 logging.error("Couldn't read file: %s", e)
                 self.parent.statusBar().showMessage("Die Datei konnte nicht geöffnet werden: %s" % e, 15000)
@@ -84,6 +87,7 @@ class Example(QtWidgets.QMainWindow):
         self.dataTable = DataTable(self)
         self.setCentralWidget(self.dataTable)
         self.statusBar()
+        self.fileURL = ""
 
         openFile = QtWidgets.QAction('&Open File', self)
         openFile.setShortcut('Ctrl+O')
@@ -106,7 +110,7 @@ class Example(QtWidgets.QMainWindow):
 
     def fileSave(self):
         name = QtWidgets.QFileDialog.getSaveFileName(self, "Datei als CSV mit Semikolon speichern",
-                                                     '/home', 'CSV Files (*.csv)')
+                                                     self.fileURL, 'CSV Files (*.csv)')
         if name[0]:
             try:
                 with open(name[0],"w") as w_csv_file:
@@ -135,6 +139,7 @@ class Example(QtWidgets.QMainWindow):
                 logging.debug(listData)
                 self.dataTable.setTableData(listData)
                 self.setWindowTitle("TSV to CSV Converter - %s" % fname[0])
+                self.fileURL = fname[0]
 
 
 if __name__ == '__main__':

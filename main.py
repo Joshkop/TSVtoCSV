@@ -114,7 +114,7 @@ class Example(QtWidgets.QMainWindow):
         if name[0]:
             try:
                 with open(name[0],"w") as w_csv_file:
-                    csv_writer = csv.writer(w_csv_file,delimiter=";")
+                    csv_writer = csv.writer(w_csv_file,delimiter=";", lineterminator='\n')
                     iColumns = self.dataTable.columnCount()
                     iRows = self.dataTable.rowCount()
                     tableData = [[self.dataTable.item(row, column).text() for column in range(iColumns)] for row in

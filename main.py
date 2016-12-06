@@ -113,7 +113,7 @@ class Example(QtWidgets.QMainWindow):
                                                      self.fileURL, 'CSV Files (*.csv)')
         if name[0]:
             try:
-                with open(name[0],"w") as w_csv_file:
+                with open(name[0],"w", newline='') as w_csv_file:
                     csv_writer = csv.writer(w_csv_file,delimiter=";", lineterminator='\n')
                     iColumns = self.dataTable.columnCount()
                     iRows = self.dataTable.rowCount()

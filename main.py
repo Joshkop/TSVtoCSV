@@ -68,9 +68,10 @@ class DataTable(QtWidgets.QTableWidget):
             event.ignore()
 
     def setTableData(self, dataList):
-        self.setRowCount(len(dataList))
-        self.setColumnCount(len(dataList[0]))
-        for x, row in enumerate(dataList):
+        validRows = [x for x in dataList if x]
+        self.setRowCount(len(validRows))
+        self.setColumnCount(len(validRows[0]))
+        for x, row in enumerate(validRows):
             for y, text in enumerate(row):
                 self.setItem(x, y, QtWidgets.QTableWidgetItem(text))
 
@@ -113,7 +114,7 @@ class Example(QtWidgets.QMainWindow):
                                                      self.fileURL, 'CSV Files (*.csv)')
         if name[0]:
             try:
-                with open(name[0],"w", newline='') as w_csv_file:
+                with open(name[0],"w") as w_csv_file:
                     csv_writer = csv.writer(w_csv_file,delimiter=";", lineterminator='\n')
                     iColumns = self.dataTable.columnCount()
                     iRows = self.dataTable.rowCount()
